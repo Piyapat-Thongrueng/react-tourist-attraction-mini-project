@@ -1,7 +1,8 @@
 import "./App.css";
+import SearchForm from "./components/SearchForm";
 
 function App() {
-  return <div className="App">{/* Start coding here */}</div>;
+  return <SearchForm />;
 }
 
 export default App;

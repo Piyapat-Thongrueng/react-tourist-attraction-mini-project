@@ -1,94 +1,91 @@
-import taipei101 from "../assets/image.png";
+import IconLink from "./ui/IconLink";
 
-const TouristCard = () => {
+
+const TouristCard = ({ place, onTagClick }) => {
+
+    // ฟังก์ชันสำหรับคัดลอกลิงก์ไปยังคลิปบอร์ด (AI ช่วยเขียน)
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("คัดลอกลิงก์แล้ว!");
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
+
+  const handleCopyLink = () => {
+    copyToClipboard(place.url);
+  };
+
   return (
     <>
-      {/* รูปภาพหลักทางซ้าย - Mobile: full width, Tablet/Desktop: 4 columns */}
+      {/* รูปภาพหลักทางซ้าย */}
       <div className="col-span-1 md:col-span-4">
         <img
-          src={taipei101}
-          alt="รีสอร์ท"
-          className="w-full h-48 md:h-64 lg:h-full object-cover rounded-lg"
+          src={place.photos[0]}
+          alt={place.title}
+          className="w-full h-64 md:h-80 lg:h-96 object-cover rounded-lg"
         />
       </div>
 
-      {/* เนื้อหาทางขวา - Mobile: full width, Tablet/Desktop: 7 columns */}
+      {/* เนื้อหาทางขวา */}
       <div className="col-span-1 md:col-span-6 flex flex-col space-y-2 md:space-y-5">
         {/* หัวข้อ */}
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold">
-          คู่มือเที่ยวเกาะช้าง กิน เที่ยว พักที่ไหนดี? อ่านจบครบที่เดียว!
-        </h2>
+        <a
+          href={place.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-lg md:text-xl lg:text-2xl font-bold"
+        >
+          {place.title}
+        </a>
 
         {/* คำอธิบาย */}
         <p className="text-sm md:text-base text-gray-600 line-clamp-2 md:line-clamp-3">
-          เวนว่างนั่นเที่ยวเกาะช้างกัน พร้อมทำกิจกรรมต่าง ๆ เช่น เที่ยวน้ำตก
-          ล่องเรือชมปลาดาว ขี่ช้างท่องป่า
-          <span className="text-blue-500 underline cursor-pointer ml-1 hover:text-blue-700">
+          {place.description.slice(0, 100) +
+            (place.description.length > 100 ? "..." : "")}
+          <a
+            href={place.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-600 cursor-pointer ml-1 hover:text-green-700"
+          >
             อ่านต่อ
-          </span>
+          </a>
         </p>
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 md:gap-3 text-sm md:text-base">
-          <span className="text-gray-500 underline cursor-pointer hover:text-gray-700">
+          <p className="text-gray-500 cursor-pointer hover:text-gray-700">
             หมวด:
-          </span>
-          <span className="text-gray-500 underline cursor-pointer hover:text-gray-700">
-            เกาะ
-          </span>
-          <span className="text-gray-500 underline cursor-pointer hover:text-gray-700">
-            ทะเล
-          </span>
-          <span className="text-gray-500 underline cursor-pointer hover:text-gray-700">
-            จุดชมวิว
-          </span>
-          <span className="text-gray-500 underline cursor-pointer hover:text-gray-700">
-            ธรรมชาติ
-          </span>
-          <span className="text-gray-500">และ</span>
-          <span className="text-gray-500 underline cursor-pointer hover:text-gray-700">
-            ตราด
-          </span>
+          </p>
+          {place.tags.map((tag, index) => (
+            <button
+              key={index}
+              onClick={() => onTagClick(tag)}
+              className="cursor-pointer hover:bg-sky-300 px-5 bg-sky-200 text-sky-700 rounded-full"
+            >
+              {tag}
+            </button>
+          ))}
         </div>
 
         {/* รูปภาพย่อย 3 รูป */}
         <div className="grid grid-cols-3 gap-2 md:gap-4 lg:gap-7 pt-3 md:pt-4 lg:pt-5">
-          <img
-            src={taipei101}
-            alt="ชายหาด"
-            className="w-full h-20 md:h-24 lg:h-full object-cover rounded-lg hover:opacity-80 transition-opacity cursor-pointer"
-          />
-          <img
-            src={taipei101}
-            alt="น้ำตก"
-            className="w-full h-20 md:h-24 lg:h-full object-cover rounded-lg hover:opacity-80 transition-opacity cursor-pointer"
-          />
-          <img
-            src={taipei101}
-            alt="จุดชมวิว"
-            className="w-full h-20 md:h-24 lg:h-full object-cover rounded-lg hover:opacity-80 transition-opacity cursor-pointer"
-          />
+          {place.photos.slice(1, 4).map((photo, index) => (
+            <img
+              key={index}
+              src={photo}
+              alt={`Photo ${index + 1}`}
+              className="w-full h-20 md:h-24 lg:h-full object-cover rounded-lg hover:opacity-80 transition-opacity cursor-pointer"
+            />
+          ))}
         </div>
       </div>
 
-      {/* ไอคอนลิงก์ทางขวาสุด - Mobile: absolute top-right, Desktop: 1 column */}
-      <div className="col-span-2 flex items-end md:items-end justify-end">
-      
-        <button className="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-blue-400 bg-white md:bg-transparent flex items-center justify-center hover:bg-blue-50 transition-colors shadow-md md:shadow-none">
-          <svg
-            className="w-5 h-5 md:w-6 md:h-6 text-blue-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-            />
-          </svg>
-        </button>
+      {/* ไอคอนลิงก์ทางขวาสุด */}
+      <div className="col-span-1 md:col-span-2 flex items-end md:items-end justify-end">
+        <IconLink copyClick={handleCopyLink} />
       </div>
     </>
   );
